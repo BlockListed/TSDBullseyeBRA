@@ -1,25 +1,28 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+global using static TSDBullseyeBRA.Logger;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Harmony;
-using UnityEngine;
+using ModLoader.Framework;
+using ModLoader.Framework.Attributes;
+using HarmonyLib;
+using TSDBullseyeBRA.patches;
 
 namespace TSDBullseyeBRA
 {
-    public class Main : VTOLMOD
+    [ItemId("xyz.031410.tsdbullseyebra")] // Harmony ID for your mod, make sure this is unique
+    public class Main : VtolMod
     {
-        public override void ModLoaded()
+        public string ModFolder;
+
+        private void Awake()
         {
-            Logging.Log("Mod loaded");
+            ModFolder = Assembly.GetExecutingAssembly().Location;
+            Log($"Awake at {ModFolder}");
 
-            HarmonyInstance harmony = HarmonyInstance.Create("xyz.031410.tsdbullseyebra");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            Harmony.CreateAndPatchAll(typeof(MFDPTSDTargetInfoPatch));
+        }
 
-            base.ModLoaded();
+        public override void UnLoad()
+        {
+            // Destroy any objects
         }
     }
 }

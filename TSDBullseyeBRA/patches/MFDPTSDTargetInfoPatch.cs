@@ -1,19 +1,26 @@
-﻿using Harmony;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace TSDBullseyeBRA.patches
 {
-    [HarmonyPatch(typeof(MFDPTacticalSituationDisplay), "UpdateTargetInfo")]
     class MFDPTSDTargetInfoPatch
     {
-        public static void Postfix(ref Text ___braNumsText, MeasurementManager ___measurements, TacticalSituationController.TSActorTargetInfo aInfo)
+        [HarmonyPatch(typeof(MFDPTacticalSituationDisplay), "UpdateTargetInfo")]
+        [HarmonyPostfix]
+        public static void SetBullseyeBRA(ref Text ___braNumsText, MeasurementManager ___measurements, TacticalSituationController.TSActorTargetInfo aInfo)
         {
-            //Logging.Log("Started UpdateTargetInfo Patch");
+            //Logger.Log("Started UpdateTargetInfo Patch");
             WaypointManager wpManager = WaypointManager.instance;
             if (!wpManager)
             {
-                Logging.Log("WaypointManager.instance was null");
+                Logger.Log("WaypointManager.instance was null");
                 return;
             }
 
@@ -23,8 +30,7 @@ namespace TSDBullseyeBRA.patches
 
             wpManager.GetBullsBRA(aInfo.estimatedPosition, out rawBearing, out rawRange, out rawAltitude);
 
-            //Logging.Log($"Got BRA, {rawBearing} {rawRange} {rawAltitude}");
-
+            //Logger.Log($"Got BRA, {rawBearing} {rawRange} {rawAltitude}");
             int bearing = Mathf.RoundToInt(rawBearing);
 
             int range = Mathf.RoundToInt(___measurements.ConvertedDistance(rawRange));
@@ -35,11 +41,11 @@ namespace TSDBullseyeBRA.patches
 
             int altitude = Mathf.RoundToInt(___measurements.ConvertedAltitude(rawAltitude) / 1000f);
 
-            //Logging.Log($"Got converted BRA, {bearing} {range} A{altitude}");
+            //Logger.Log($"Got converted BRA, {bearing} {range} A{altitude}");
 
             ___braNumsText.text = $"{bearing}\n{range}\n{altitude}";
 
-            //Logging.Log("Completed UpdateTargetInfo Patch");
+            //Logger.Log("Completed UpdateTargetInfo Patch");
         }
     }
 }

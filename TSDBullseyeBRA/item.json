@@ -1,0 +1,11 @@
+﻿{
+  "Title": "TSDBullseyeBRA",
+  "Description": "Switch BRA readout on the TSD to relative to bullseye.",
+  "PreviewImageUrl": "https://i.imgur.com/lbgsFI3.png",
+  "MetaData": {
+    "DllName": "TSDBullseyeBRA.dll",
+    "AllowLoadOnStart": true,
+    "ShowOnMainList": true,
+    "DllHash": ""
+  }
+}
